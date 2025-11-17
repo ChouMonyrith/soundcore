@@ -1,103 +1,118 @@
-import Image from "next/image";
+import CategoryCard from "./_components/CategoryCard";
+import SearchInput from "./_components/SearchInput";
+import SoundGrid from "./_components/SoundGrid";
+import { fetchSounds, getParentCategories } from "./_utils/sound-api";
 
-export default function Home() {
+export default async function Page({ searchParams: searchParamsPromise }) {
+  const searchParams = await searchParamsPromise;
+  const categories = await getParentCategories();
+
+  const {
+    category_id,
+    price_min,
+    price_max,
+    bpm_min,
+    bpm_max,
+    key_signature,
+    search,
+  } = searchParams;
+
+  const filters = {
+    category_ids: category_id?.split(",").map(Number) || [],
+    price_min: price_min ? parseFloat(price_min) : undefined,
+    price_max: price_max ? parseFloat(price_max) : undefined,
+    bpm_min: bpm_min ? parseInt(bpm_min) : undefined,
+    bpm_max: bpm_max ? parseInt(bpm_max) : undefined,
+    key_signature,
+    search,
+    per_page: 15,
+  };
+
+  let sounds = [];
+  let error = null;
+
+  try {
+    sounds = await fetchSounds(filters);
+  } catch (err) {
+    console.error("Error fetching sounds:", err);
+    error = err.message || "Failed to load sounds.";
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div>
+      {/* Hero Section */}
+      <section className="bg-black text-white p-10 md:p-16 text-center mx-4 my-4 shadow-sm">
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4">
+          Explore Royalty-Free{" "}
+          <span className="text-yellow-500">&lt;Music/&gt;</span>
+        </h1>
+        <p className="text-lg md:text-xl text-white max-w-3xl mx-auto mb-8">
+          Bring your video and music projects to life with our huge collection
+          of high-quality, authentic audio tracks.
+        </p>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        {/* Search Bar */}
+        <div className="max-w-3xl mx-auto">
+          <SearchInput className="h-16" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Tags */}
+        <div className="mt-6 flex flex-wrap justify-center gap-2 text-sm">
+          {[
+            "background music",
+            "background",
+            "upbeat",
+            "intro",
+            "epic",
+            "bieber",
+          ].map((tag) => (
+            <button
+              key={tag}
+              className="flex items-center gap-1 text-black bg-white cursor-pointer border rounded-full px-3 py-1 hover:bg-gray-100 transition"
+            >
+              🔥 {tag}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div className="bg-orange-50 text-center my-5">
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Top &lt;Categories/&gt;
+          </h2>
+          <p className="text-black mt-2 max-w-2xl mx-auto">
+            Discover the latest assets across our most-loved categories.
+          </p>
+          <div className="flex overflow-x-auto justify-center items-center space-x-4 p-4">
+            {categories.map((category) => (
+              <CategoryCard key={category.id} category={category} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="text-center my-5">
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Most &lt;Popular/&gt;
+          </h2>
+          <p className="text-black mt-2 max-w-2xl mx-auto">
+            Keep up with what the world is listening to and explore trending
+            themes and tracks from our curated playlists.
+          </p>
+        </div>
+
+        {error && (
+          <p className="text-center text-red-500">
+            Error fetching sounds: {error}
+          </p>
+        )}
+
+        <div className="min-h-screen ">
+          <SoundGrid sounds={sounds} />
+        </div>
+      </section>
     </div>
   );
 }
