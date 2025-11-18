@@ -44,7 +44,7 @@ export default function BpmSidebar() {
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer text-sm border transition
               ${
                 selected?.id === range.id
-                  ? "bg-purple-600 text-white border-purple-600"
+                  ? "bg-yellow-500 text-white"
                   : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
               }`}
           >

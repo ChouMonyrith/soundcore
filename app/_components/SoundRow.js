@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import SoundCard from "./SoundCard";
 
 export default function SoundRow({ title, assetCount, sounds }) {
+  console.log("SoundRow sounds:", sounds);
   return (
     <div className="mt-12 border-b pb-8">
       <div className="flex items-center justify-between mb-4">
@@ -14,7 +16,9 @@ export default function SoundRow({ title, assetCount, sounds }) {
         </div>
 
         <button className="text-black text-sm font-medium hover:underline">
-          Show all
+          <Link href={`/sounds?category_id=${sounds[0]?.category.parent_id}`}>
+            Show all
+          </Link>
         </button>
       </div>
 

@@ -8,6 +8,14 @@ import SoundRow from "../_components/SoundRow";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "All Categories — SoundCore",
+  description: "Search and explore all royalty-free sounds.",
+  alternates: {
+    canonical: "/sounds",
+  },
+};
+
 export default async function CategoriesPage() {
   const [categories, sounds] = await Promise.all([
     await getAllCategories(),

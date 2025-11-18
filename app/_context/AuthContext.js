@@ -1,75 +1,55 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import axios from "axios";
+import { createContext, useState, useEffect, useContext } from "react";
 
-const { createContext, useState, useEffect, useContext } = require("react");
+axios.defaults.withCredentials = true; // important for cookies
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("api_token");
-    if (token) {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    }
+    // Fetch user on app load
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
+        withCredentials: true,
+      })
+      .then((res) => setUser(res.data.user))
+      .catch(() => setUser(null));
   }, []);
 
   const login = async (email, password) => {
-    // Example login function
-    try {
-      // Call your Laravel login API
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        {
-          email,
-          password,
-        }
-      );
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+      { email, password },
+      { withCredentials: true }
+    );
 
-      // Assuming API returns { user: {...}, token: '...' }
-      const { user: userData, token } = response.data;
+    const profile = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/profile`,
+      { withCredentials: true }
+    );
 
-      // Store token and user info
-      localStorage.setItem("api_token", token);
-      localStorage.setItem("user", JSON.stringify(userData));
-
-      // Update context state
-      setUser(userData);
-
-      // Redirect after successful login
-      router.push("/dashboard"); // Or wherever you want to go
-      router.refresh(); // Optional: Refresh to update UI state based on new user state
-    } catch (error) {
-      console.error("Login error:", error);
-      // Handle login error (e.g., show message)
-      throw error; // Re-throw or handle as needed by your login form
-    }
+    setUser(profile.data.user);
   };
 
-  const updateUser = (userData) => {
-    // Directly update user state without making API call
-    localStorage.setItem("user", JSON.stringify(userData));
-    setUser(userData);
+  const updateUser = async (user) => {
+    // await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
+    //   withCredentials: true,
+    // });
+    setUser(user);
   };
 
-  const logout = () => {
-    // Clear tokens and user info
-    localStorage.removeItem("api_token");
-    localStorage.removeItem("user");
+  const logout = async () => {
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+      {},
+      { withCredentials: true }
+    );
 
-    // Update context state
     setUser(null);
-
-    // Redirect after logout
-    router.push("/"); // Or login page
-    router.refresh(); // Refresh to update UI state based on new user state
   };
 
   return (
@@ -79,10 +59,4 @@ export function AuthProvider({ children }) {
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-}
+export const useAuth = () => useContext(AuthContext);

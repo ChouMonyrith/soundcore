@@ -1,19 +1,48 @@
+import Breadcrumbs from "@/app/_components/BreadCrumbs";
 import { getCategoryBySlug } from "@/app/_utils/sound-api";
 import Image from "next/image";
 import Link from "next/link";
-import { use } from "react";
+
+export async function generateMetadata({ params }) {
+  const category = await getCategoryBySlug(params.slug);
+
+  return {
+    title: `${category.name} Sounds`,
+    description: category.description ?? "Browse audio by category.",
+    openGraph: {
+      title: `${category.name} Sounds`,
+      description: category.description,
+      images: [
+        {
+          url: category.image_url,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    alternates: {
+      canonical: `/categories/${params.slug}`,
+    },
+  };
+}
 
 export default async function CategoryPage({ params }) {
   const { slug } = params; // Get the slug from the URL
 
   const parentCategory = await getCategoryBySlug(slug);
+  const allCategories = await getAllCategories();
+
+  const breadcrumbs = [
+    { label: "Home", href: "/" },
+    { label: "Categories", href: "/categories" },
+    { label: category.name }, // current
+  ];
 
   if (!parentCategory) {
     return <div>Category not found</div>; // Handle 404
   }
 
   // Fetch all categories to find the children
-  const allCategories = await getAllCategories();
 
   // Filter to find children of this parent
   const childCategories = allCategories.filter(
@@ -22,6 +51,7 @@ export default async function CategoryPage({ params }) {
 
   return (
     <div className="container mx-auto px-4 py-10">
+      <Breadcrumbs items={breadcrumbs} />
       {/* Header showing the parent category name */}
       <h1 className="text-3xl font-bold mb-8 text-gray-900">
         {parentCategory.name}
