@@ -2,6 +2,58 @@ import CategoryCard from "./_components/CategoryCard";
 import SearchInput from "./_components/SearchInput";
 import SoundGrid from "./_components/SoundGrid";
 import { fetchSounds, getParentCategories } from "./_utils/sound-api";
+import CategoryCarousel from "./_components/CategorySlider";
+
+// app/layout.js
+export const metadata = {
+  // metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
+
+  title: {
+    default: "SoundCore — Royalty Free Music & Sound Effects",
+    template: "%s | SoundCore",
+  },
+
+  description:
+    "Discover royalty-free music, sound effects, loops, and audio assets. Download high-quality sounds for your projects.",
+
+  keywords: [
+    "royalty free music",
+    "sound effects",
+    "audio marketplace",
+    "free music download",
+    "loops",
+    "beats",
+    "soundcore",
+  ],
+
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "SoundCore",
+    images: [
+      {
+        url: "/public/blacklogo.png",
+        width: 1200,
+        height: 630,
+        alt: "SoundCore",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "SoundCore — Royalty Free Music & SFX",
+    description:
+      "Discover royalty-free music, sound effects, loops, and audio assets.",
+    images: ["/public/blacklogo.png"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default async function Page({ searchParams: searchParamsPromise }) {
   const searchParams = await searchParamsPromise;
@@ -77,22 +129,6 @@ export default async function Page({ searchParams: searchParamsPromise }) {
       </section>
 
       <section>
-        <div className="bg-orange-50 text-center my-5">
-          <h2 className="text-2xl md:text-3xl font-bold">
-            Top &lt;Categories/&gt;
-          </h2>
-          <p className="text-black mt-2 max-w-2xl mx-auto">
-            Discover the latest assets across our most-loved categories.
-          </p>
-          <div className="flex overflow-x-auto justify-center items-center space-x-4 p-4">
-            {categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section>
         <div className="text-center my-5">
           <h2 className="text-2xl md:text-3xl font-bold">
             Most &lt;Popular/&gt;
@@ -109,8 +145,24 @@ export default async function Page({ searchParams: searchParamsPromise }) {
           </p>
         )}
 
-        <div className="min-h-screen ">
+        <div>
           <SoundGrid sounds={sounds} />
+        </div>
+      </section>
+
+      <section>
+        <div className="bg-orange-50 text-center py-10">
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Top &lt;Categories/&gt;
+          </h2>
+          <p className="text-black mt-2 max-w-2xl mx-auto">
+            Discover the latest assets across our most-loved categories.
+          </p>
+          <div className="flex overflow-x-auto justify-center items-center space-x-4 p-4">
+            {categories.map((category) => (
+              <CategoryCard key={category.id} category={category} />
+            ))}
+          </div>
         </div>
       </section>
     </div>

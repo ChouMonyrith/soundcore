@@ -132,10 +132,10 @@ export default function CategorySidebar() {
                       >
                         <Checkbox
                           id={`sub-${sub.id}`}
-                          checked={urlCategoryId.includes(sub.id)} // Check state comes from URL params
+                          checked={urlCategoryId.includes(sub.id)}
                           onCheckedChange={(checked) =>
                             handleCategoryToggle(sub.id, checked)
-                          } // Update URL params
+                          }
                         />
                         <Label htmlFor={`sub-${sub.id}`} className="text-sm">
                           {sub.name}

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export default function CategoryCarousel({ categories }) {
   const scrollRef = useRef(null);
@@ -40,12 +41,14 @@ export default function CategoryCarousel({ categories }) {
         {categories?.map((cat) => (
           <div key={cat.id} className="shrink-0 w-60 cursor-pointer">
             <div className="relative w-full h-[200px] rounded overflow-hidden">
-              <Image
-                src={cat.image_url || "/blacklogo.png"}
-                alt={cat.name}
-                fill
-                style={{ objectFit: "cover" }}
-              />
+              <Link href={`/sounds?category_id=${cat.id}`}>
+                <Image
+                  src={cat.image_url || "/blacklogo.png"}
+                  alt={cat.name}
+                  fill
+                  style={{ objectFit: "cover" }}
+                />
+              </Link>
             </div>
 
             <h3 className="text-lg font-semibold mt-3">{cat.name}</h3>

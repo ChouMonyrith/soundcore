@@ -1,7 +1,6 @@
 "use client";
 
 import LogoImage from "@/public/logo.png";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
@@ -133,7 +132,7 @@ const Navbar = () => {
                       </Link>
                       <button
                         onClick={logout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="block w-full text-left px-4 py-2 text-sm cursor-pointer text-gray-700 hover:bg-gray-100"
                       >
                         Sign Out
                       </button>

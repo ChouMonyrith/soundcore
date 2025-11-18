@@ -46,7 +46,7 @@ export default function SoundCard({ sound }) {
             {sound.title}
           </Link>
           <p className="text-sm text-gray-600 hover:underline">
-            By {sound.artist?.name}
+            By {sound.artist?.username}
           </p>
         </div>
       </div>
